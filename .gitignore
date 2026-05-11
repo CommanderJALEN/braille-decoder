@@ -1,8 +1,20 @@
+# Python
 __pycache__/
 *.pyc
 .env
 .venv/
 venv/
+
+# Editors / OS
 .DS_Store
 .idea/
 .vscode/
+
+# PlatformIO build artifacts
+firmware/.pio/
+firmware/.pioenvs/
+firmware/.piolibdeps/
+firmware/.vscode/
+
+# Firmware secrets — never commit credentials
+firmware/src/secrets.h
