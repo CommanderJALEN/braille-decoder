@@ -235,21 +235,23 @@ VOICE_HTML = """<!DOCTYPE html>
 <title>BrailleDecoder Voice</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; width: 100%; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     background: linear-gradient(180deg, #0a0e27 0%, #1a1f3a 100%);
     color: #e8eaf2;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
     overflow: hidden;
+  }
+  .page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 32px 20px 20px;
+    gap: 16px;
   }
   header {
     text-align: center;
-    margin-bottom: 40px;
   }
   h1 {
     font-size: 28px;
@@ -258,11 +260,23 @@ VOICE_HTML = """<!DOCTYPE html>
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
+    line-height: 1.2;
   }
   .subtitle {
     font-size: 14px;
     color: #9ca3af;
+  }
+  main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    text-align: center;
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
   }
   .mic-button {
     width: 180px;
@@ -277,8 +291,8 @@ VOICE_HTML = """<!DOCTYPE html>
     justify-content: center;
     box-shadow: 0 10px 40px rgba(59, 130, 246, 0.4);
     transition: transform 0.15s ease, box-shadow 0.3s ease;
-    position: relative;
     -webkit-tap-highlight-color: transparent;
+    flex-shrink: 0;
   }
   .mic-button:active { transform: scale(0.95); }
   .mic-button.listening {
@@ -294,11 +308,17 @@ VOICE_HTML = """<!DOCTYPE html>
     height: 64px;
     fill: white;
   }
+  .feedback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 80px;
+  }
   .status {
-    margin-top: 32px;
     font-size: 16px;
     color: #9ca3af;
-    text-align: center;
     min-height: 24px;
     transition: color 0.3s;
   }
@@ -306,31 +326,26 @@ VOICE_HTML = """<!DOCTYPE html>
   .status.success { color: #34d399; }
   .status.error { color: #f87171; }
   .transcript {
-    margin-top: 16px;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
     color: #f3f4f6;
-    text-align: center;
-    min-height: 32px;
-    letter-spacing: 1px;
+    min-height: 30px;
+    letter-spacing: 0.5px;
+    word-break: break-word;
   }
-  .footer {
-    position: absolute;
-    bottom: 20px;
-    font-size: 12px;
-    color: #4b5563;
-    text-align: center;
-    width: 100%;
-  }
-  .footer a { color: #6b7280; text-decoration: none; }
   .hint {
-    margin-top: 24px;
     font-size: 13px;
     color: #6b7280;
     max-width: 320px;
-    text-align: center;
     line-height: 1.5;
   }
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: #4b5563;
+    padding-top: 8px;
+  }
+  footer a { color: #6b7280; text-decoration: none; }
   .unsupported {
     background: #7f1d1d;
     color: #fecaca;
@@ -344,29 +359,33 @@ VOICE_HTML = """<!DOCTYPE html>
 </style>
 </head>
 <body>
-  <header>
-    <h1>BrailleDecoder</h1>
-    <div class="subtitle">Speak a letter or word</div>
-  </header>
+  <div class="page">
+    <header>
+      <h1>BrailleDecoder</h1>
+      <div class="subtitle">Speak a letter or word</div>
+    </header>
 
-  <div id="app">
-    <button id="micBtn" class="mic-button" aria-label="Start listening">
-      <svg class="mic-icon" viewBox="0 0 24 24">
-        <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/>
-        <path d="M19 11a1 1 0 1 0-2 0 5 5 0 0 1-10 0 1 1 0 1 0-2 0 7 7 0 0 0 6 6.92V21a1 1 0 1 0 2 0v-3.08A7 7 0 0 0 19 11z"/>
-      </svg>
-    </button>
+    <main id="app">
+      <button id="micBtn" class="mic-button" aria-label="Start listening">
+        <svg class="mic-icon" viewBox="0 0 24 24">
+          <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/>
+          <path d="M19 11a1 1 0 1 0-2 0 5 5 0 0 1-10 0 1 1 0 1 0-2 0 7 7 0 0 0 6 6.92V21a1 1 0 1 0 2 0v-3.08A7 7 0 0 0 19 11z"/>
+        </svg>
+      </button>
 
-    <div id="status" class="status">Tap the mic to speak</div>
-    <div id="transcript" class="transcript"></div>
+      <div class="feedback">
+        <div id="status" class="status">Tap the mic to speak</div>
+        <div id="transcript" class="transcript"></div>
+      </div>
 
-    <div class="hint">
-      Try: "B", "letter C", "spell hello", or "show me an A"
-    </div>
-  </div>
+      <div class="hint">
+        Try: "B", "letter C", "spell hello", or "show me an A"
+      </div>
+    </main>
 
-  <div class="footer">
-    BrailleDecoder · <a href="/docs">API Docs</a>
+    <footer>
+      BrailleDecoder · <a href="/docs">API Docs</a>
+    </footer>
   </div>
 
 <script>
