@@ -161,8 +161,8 @@ Built by Group [6] for [BSCpE 4-1].
 | Member                   | Role                  |
 |--------------------------|-----------------------|
 | Roan Andrei Uson         | Project Manager       |
-| Andrei Capili            | Website manager       |
+| Andrei Capili            | Documentatiom         |
 | Angel Matthew Marcos     | Software              |
 | Adrian Paul Peralta      | Hardware              |
 | John Allen Peralta       | Software              |
-| Frankin Evan Villacampa  | (role)                |
+| Frankin Evan Villacampa  | Hardware              |
